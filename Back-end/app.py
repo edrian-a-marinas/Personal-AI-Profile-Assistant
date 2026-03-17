@@ -1,7 +1,6 @@
 import os
 from fastapi import FastAPI, status
 from fastapi.middleware.cors import CORSMiddleware
-from starlette.middleware.trustedhost import TrustedHostMiddleware
 from pydantic import BaseModel
 from dotenv import load_dotenv
 from chatbot import Chatbot
@@ -12,13 +11,7 @@ app = FastAPI()
 chatbot = Chatbot()
 
 # ---------- Allow the frontend server to send requests to this API ----------
-ALLOWED_HOSTS = [h.strip() for h in os.getenv("ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")]
 ALLOWED_ORIGINS = os.getenv("ALLOWED_ORIGINS", "http://127.0.0.1:5000").split(",")
-
-app.add_middleware(
-  TrustedHostMiddleware,
-  allowed_hosts= ALLOWED_HOSTS  #
-)
 
 app.add_middleware(
   CORSMiddleware,
@@ -27,7 +20,6 @@ app.add_middleware(
   allow_methods=["*"],
   allow_headers=["*"],
 )
-
 
 class MessageCreate(BaseModel):
   content: str
