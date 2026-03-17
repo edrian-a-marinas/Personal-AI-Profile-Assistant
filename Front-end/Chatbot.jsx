@@ -126,7 +126,7 @@ function ChatMessage({ message, sender, typing }) {
       : 'chat-message-robot'
     } >
       {sender === 'robot' && (
-        <img className="icon" src="./CSS/Images/bot.png" />
+        <img className="icon" src="./Images/bot.png" />
       )}
 
       <div className = "chat-message-text"> 
@@ -136,7 +136,7 @@ function ChatMessage({ message, sender, typing }) {
       </div>
 
       {sender === 'user' && (
-        <img className="icon" src="./CSS/Images/usr.png" />
+        <img className="icon" src="./Images/usr.png" />
       )}
     </div>
   );
