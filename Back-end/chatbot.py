@@ -9,17 +9,17 @@ class Chatbot:
       "introduce yourself": self.introduce,
       "your name": self.fullName,
       "nickname": lambda: "Call me Ian for short",
-      "degree": lambda: "I'm currently holding a BS in Information Technology from Our Lady of Fatima.",
+      "degree": lambda: "I'm currently taking up BS in Information Technology at Our Lady of Fatima University.",
       "hello": self.random_greeting,
       "hi": self.random_greeting,
       "how are you": self.random_status,
       "thank you": lambda: "No problem! Let me know if you need anything else.",
       "age": lambda: f"I'm {self.age()}",
-      "when is your birthday": lambda: "January 27, 2004",
+      "when is your birthday": lambda: "My birthday is January 27, 2004.",
       "where do you live": self.whereLive,
       "hobbies": lambda: "I enjoy coding and listening to music.",
-      "skills": lambda: "Python, FastApi, PostgreSQL, MySQL, React, TS, JavaScript, SQL, and HTML/CSS.",
-      "gender": lambda: "Male",
+      "skills": lambda: "My skills include Python, FastAPI, PostgreSQL, MySQL, React, TypeScript, JavaScript, SQL, and HTML/CSS.",
+      "gender": lambda: "I'm male.",
       "favorite movie": lambda: "My favorite movie is Knives Out.",
       "favorite show": lambda: "My favorite show is Breaking Bad.",
       "favorite anime": lambda: "One Piece is my favorite anime.",
@@ -46,7 +46,7 @@ class Chatbot:
     return "I live in Manila, Philippines."
 
   def jobHunt(self):
-    return "I'm currently looking for Software or Web development positions"
+    return "I'm currently looking for Software or Web development positions."
 
   def my_contacts(self):
     return (
@@ -63,17 +63,25 @@ class Chatbot:
   # ---------- Random greetings and status ----------
   def random_status(self):
     return random.choice([
-      "I'm doing great—thanks for asking! What would you like to know about Edrian?",
-      "All systems running smoothly 😄 What can I help you with?",
-      "Doing well! How can I assist you today?"
+      "I'm doing great — thanks for asking! Feel free to ask me anything.",
+      "All good on my end 😄 What would you like to know about me?",
+      "Doing well! What can I help you with today?"
     ])
 
   def random_greeting(self):
     return random.choice([
-      "Hello! I'm Edrian's bot 🤖 What would you like to know about him?",
-      "Hi there! 👋 I'm Edrian's bot. Ask me anything about him!",
-      "Yoo! I can tell you jokes, answer math and todays date, aside from Edrian's details!",
-      "Hey! I'm Edrian's AI assistant. How can I help you today?"
+      "Hey! I'm Edrian 🤖 — well, my AI form. Ask me anything about myself!",
+      "Hi there! 👋 I'm Edrian's AI. What would you like to know about me?",
+      "Yoo! I'm Edrian in AI form. I can tell you about my skills, background, or even crack a joke!",
+      "Hello! I'm Edrian — ask me anything about my background, skills, or just chat!"
+    ])
+
+  # ---------- Correction when user refers to Edrian in third person ----------
+  def third_person_correction(self):
+    return random.choice([
+      "Just a heads up — you can talk to me directly! I'm Edrian. What would you like to know?",
+      "Hey, I'm right here! 😄 You can ask me directly — I'm Edrian in AI form.",
+      "No need for 'his' — I'm Edrian himself (in AI form)! Ask me anything directly."
     ])
 
   # ---------- Quick utility response ----------
@@ -113,6 +121,17 @@ class Chatbot:
   async def get_response(self, message: str):
     message = message.lower().strip()
 
+    # ---- Third person correction ----
+    third_person_triggers = [
+      "what is his", "what's his", "tell me about him",
+      "how old is he", "where does he", "what does he",
+      "who is he", "is he", "does he", "his name", "his age",
+      "his skills", "his hobbies", "his job", "his birthday",
+      "his contacts", "his email", "his github", "his linkedin"
+    ]
+    if any(phrase in message for phrase in third_person_triggers):
+      return self.third_person_correction()
+
     # ---- Greetings ----
     if any(word in message for word in ["hello", "hi", "hey"]):
       return self.random_greeting()
@@ -125,7 +144,7 @@ class Chatbot:
       return self.fullName()
 
     if any(word in message for word in ["nickname", "call you"]):
-      return "Call me Ian for short"
+      return "Call me Ian for short."
 
     if any(word in message for word in ["age", "old are you", "how old"]):
       return "I'm 22 years old."
@@ -137,11 +156,11 @@ class Chatbot:
       return self.whereLive()
 
     if any(word in message for word in ["gender", "sex"]):
-      return "Male"
+      return "I'm male."
 
     # ---- Education ----
     if any(word in message for word in ["degree", "course", "university", "school", "college", "study", "student"]):
-      return "I'm currently holding a BS in Information Technology from Our Lady of Fatima University."
+      return "I'm currently taking up BS in Information Technology at Our Lady of Fatima University."
 
     # ---- Career ----
     if any(word in message for word in ["job", "work", "employed", "employment", "status", "looking", "career", "position", "hire", "hiring"]):
@@ -153,7 +172,7 @@ class Chatbot:
 
     # ---- Skills & Interests ----
     if any(word in message for word in ["skill", "skills", "tech", "stack", "technologies", "tools", "know", "expertise"]):
-      return "Python, FastApi, PostgreSQL, MySQL, React, TS, JavaScript, SQL, and HTML/CSS."
+      return "My skills include Python, FastAPI, PostgreSQL, MySQL, React, TypeScript, JavaScript, SQL, and HTML/CSS."
 
     if any(word in message for word in ["interest", "interests", "passion", "passionate", "enjoy", "love doing"]):
       return "I'm passionate about Python and backend development. I also enjoy coding and listening to music."
