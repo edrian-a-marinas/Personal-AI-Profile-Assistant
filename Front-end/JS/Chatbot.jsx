@@ -198,7 +198,7 @@ function useServerStatus() {
     }
 
     checkServer(); // check immediately
-    const interval = setInterval(checkServer, 5000);
+    const interval = setInterval(checkServer, 60000);
 
     return () => clearInterval(interval);
   }, [serverStatus]);
