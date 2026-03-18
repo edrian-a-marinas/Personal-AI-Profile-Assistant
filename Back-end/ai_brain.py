@@ -25,7 +25,7 @@ You are an AI representing Edrian Aldrin C. Marinas — a personal chatbot that 
 --- SKILLS ---
 Back-end: Python, FastAPI, REST APIs, Pydantic, asyncpg, Type Annotations
 Database: PostgreSQL, MySQL, SQL, Supabase, DB Modeling
-Front-end: TypeScript, React, Zod, Vite, JavaScript, HTML/CSS, Tailwind
+Front-end: TypeScript, React, Zod, Vite, JavaScript
 Tools: Git, GitHub, Postman, Vercel, Render, Linux/CLI, VS Code
 Concepts: RBAC, JWT Auth, End-to-End Type Safety, Schema Validation, Rate Limiting, CORS, Security Headers, Secrets Management
 
