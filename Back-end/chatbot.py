@@ -3,6 +3,16 @@ import requests
 from datetime import datetime
 from ai_brain import ai_think_async
 
+CONTACTS = (
+  "Here's how you can reach me:\n"
+  "Email: edrian.a.marinas@gmail.com\n"
+  "Phone: 09854703444\n"
+  "LinkedIn: linkedin.com/in/edrian-a-marinas\n"
+  "GitHub: github.com/edrian-a-marinas\n"
+  "Facebook: facebook.com/edri.a.marinas\n"
+  "Portfolio: edrian-marinas.vercel.app"
+)
+
 class Chatbot:
   def __init__(self):
     self.default_responses = {
@@ -90,6 +100,10 @@ class Chatbot:
     if any(word in message for word in ["hello", "hi", "hey"]):
       return self.random_greeting()
 
+    # ---- Contacts — handled here to guarantee exact formatting ----
+    if any(word in message for word in ["contact", "contacts", "reach", "social", "facebook", "linkedin", "github", "gmail", "email", "phone", "number"]):
+      return CONTACTS
+
     # ---- Utilities ----
     if any(word in message for word in ["date", "today", "what day"]):
       return self.date_today()
@@ -103,5 +117,18 @@ class Chatbot:
     if any(word in message for word in ["thank", "thanks", "appreciate"]):
       return "No problem! Let me know if you need anything else."
 
-    # ---- Everything else goes to AI ----
+    # ---- Bigram fuzzy match fallback ----
+    best_match = None
+    best_score = 0.0
+    for key in self.default_responses:
+      score = self.compare_two_strings(message, key)
+      if score > best_score:
+        best_score = score
+        best_match = key
+
+    if best_score >= 0.6 and best_match:
+      response = self.default_responses[best_match]
+      return response() if callable(response) else response
+
+    # ---- AI THINKING FALLBACK / Longer response ----
     return await ai_think_async(message)

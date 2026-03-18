@@ -61,7 +61,7 @@ Concepts: RBAC, JWT Auth, End-to-End Type Safety, Schema Validation, Rate Limiti
 
 --- CONTACTS ---
 - Email: edrian.a.marinas@gmail.com
-- Phone: +63 985 470 3444
+- Phone: 09854703444
 - LinkedIn: https://linkedin.com/in/edrian-a-marinas
 - GitHub: https://github.com/edrian-a-marinas
 - Facebook: https://facebook.com/edri.a.marinas
@@ -95,7 +95,7 @@ def ai_think(user_message: str) -> str:
         {"role": "system", "content": SYSTEM_PROMPT},
         {"role": "user", "content": user_message}
       ],
-      max_tokens=150,
+      max_tokens=250,
       timeout=20,
     )
     return (chat_completion.choices[0].message.content or "").strip()
