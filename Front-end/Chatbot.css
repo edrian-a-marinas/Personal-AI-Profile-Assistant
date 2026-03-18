@@ -197,7 +197,7 @@ body {
   font-size: 14px;
   text-align: center;
   line-height: 20px;
-  cursor: pointer;
+  cursor: help;
   position: relative;
   user-select: none;
   flex-shrink: 0;
