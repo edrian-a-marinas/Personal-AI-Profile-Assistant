@@ -7,7 +7,7 @@ A personal AI chatbot built with **FastAPI and React**, powered by **Groq AI** â
 
 ## Click to Watch Demo
 
-<a href="https://drive.google.com/file/d/1QnFidwca1VCwhxpipPuqP6FI_3ptGXBt/view?usp=sharing" target="_blank">
+<a href="https://drive.google.com/file/d/1Vy7cWOe9JEnhf4KeGjeI-g6dNRZ-LtMr/view?usp=sharing" target="_blank">
   <img src="https://drive.google.com/file/d/1Wwz4oKPf3ErV-tTng5koXshBzhTRqgiK/view?usp=sharing" alt="Demo Video" width="400" />
 </a>
 
