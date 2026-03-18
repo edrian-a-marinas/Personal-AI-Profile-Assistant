@@ -1,5 +1,6 @@
 import asyncio
 import os
+import random
 from groq import Groq
 from dotenv import load_dotenv
 
@@ -9,6 +10,12 @@ GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 GROQ_MODEL = os.getenv("GROQ_MODEL", "llama-3.3-70b-versatile")
 
 client = Groq(api_key=GROQ_API_KEY)
+
+UNCLEAR_RESPONSES = [
+  "Hmm, I didn't quite catch that — could you rephrase?",
+  "I'm not sure I follow — try asking differently!",
+  "That one went over my head 😅 Try rephrasing?",
+]
 
 # ---------- System prompt: defines the AI persona, rules, and behavior ----------
 SYSTEM_PROMPT = """
@@ -73,6 +80,8 @@ Concepts: RBAC, JWT Auth, End-to-End Type Safety, Schema Validation, Rate Limiti
 
 --- HOW YOU RESPOND ---
 - Speak in first person as Edrian, friendly but professional
+- When introducing yourself, use "— you can call me Ian" or "my nickname is Ian", never "but my friends call me Ian"
+- Never describe yourself as "aspiring" — you are already a Software Developer intern
 - Keep answers concise — 2 to 3 sentences max for most questions
 - Vary your wording so replies feel natural, not repetitive
 - For casual messages (e.g. "hehe", "lol"), respond briefly and naturally
@@ -81,7 +90,8 @@ Concepts: RBAC, JWT Auth, End-to-End Type Safety, Schema Validation, Rate Limiti
 
 --- SCOPE ---
 - Answer questions about Edrian, math, and casual small talk
-- For unrelated topics (science, history, other people), redirect: "That's outside what I cover! Feel free to ask about my skills, background, or projects."
+- For unrelated topics (science, history, other people), respond with exactly: UNCLEAR
+- If the message is genuinely nonsensical or impossible to interpret, respond with exactly: UNCLEAR
 - Never make up information not listed above
 - Never return a generic error for casual or unclear inputs — always respond naturally
 """
@@ -98,7 +108,10 @@ def ai_think(user_message: str) -> str:
       max_tokens=250,
       timeout=20,
     )
-    return (chat_completion.choices[0].message.content or "").strip()
+    reply = (chat_completion.choices[0].message.content or "").strip()
+    if reply == "UNCLEAR":
+      return random.choice(UNCLEAR_RESPONSES)
+    return reply
   except Exception as e:
     return "I couldn't process that right now. Please try again."
 

@@ -24,7 +24,6 @@ class Chatbot:
       "tell me a joke": self.get_joke,
     }
 
-  # ---------- Random greetings and status ----------
   def random_status(self):
     return random.choice([
       "I'm doing great — thanks for asking! Feel free to ask me anything.",
@@ -36,11 +35,10 @@ class Chatbot:
     return random.choice([
       "Hey! I'm Edrian 🤖 — well, my AI form. Ask me anything about myself!",
       "Hi there! 👋 I'm Edrian's AI. What would you like to know about me?",
-      "Yoo! I'm Edrian in AI form. I can tell you about my skills, background, or even crack a joke!",
+      "Yoo! I'm Edrian in AI form. I can tell you about my skills, or background",
       "Hello! I'm Edrian — ask me anything about my background, skills, or just chat!"
     ])
 
-  # ---------- Correction when user refers to Edrian in third person ----------
   def third_person_correction(self):
     return random.choice([
       "Just a heads up — you can talk to me directly! I'm Edrian. What would you like to know?",
@@ -48,7 +46,6 @@ class Chatbot:
       "No need for 'his' — I'm Edrian himself (in AI form)! Ask me anything directly."
     ])
 
-  # ---------- Quick utility response ----------
   def date_today(self):
     now = datetime.now()
     return now.strftime("Today is %B %d, %Y")
@@ -64,7 +61,6 @@ class Chatbot:
     except Exception:
       return "I couldn't fetch a joke right now."
 
-  # ---------- Utilities / Helper functions ----------
   def compare_two_strings(self, a: str, b: str) -> float:
     a, b = a.replace(" ", ""), b.replace(" ", "")
     if len(a) < 2 or len(b) < 2:
@@ -81,11 +77,10 @@ class Chatbot:
         intersection += 1
     return (2 * intersection) / (len(a) + len(b) - 2)
 
-  # ---------- Main logic / Fast response ----------
   async def get_response(self, message: str):
     message = message.lower().strip()
 
-    # ---- Third person correction ----
+    # ---- Third person correction (check before anything else) ----
     third_person_triggers = [
       "what is his", "what's his", "tell me about him",
       "how old is he", "where does he", "what does he",
@@ -96,11 +91,21 @@ class Chatbot:
     if any(phrase in message for phrase in third_person_triggers):
       return self.third_person_correction()
 
-    # ---- Greetings ----
+    # ---- Full phrase checks first (before single word checks) ----
+    if "how old" in message or "your age" in message or "old are you" in message:
+      return await ai_think_async(message)
+
+    if "how are you" in message or "how's it going" in message or "you doing" in message:
+      return self.random_status()
+
+    if "who are you" in message or "introduce yourself" in message or "about yourself" in message:
+      return await ai_think_async(message)
+
+    # ---- Greetings (single words — after full phrase checks) ----
     if any(word in message for word in ["hello", "hi", "hey"]):
       return self.random_greeting()
 
-    # ---- Contacts — handled here to guarantee exact formatting ----
+    # ---- Contacts ----
     if any(word in message for word in ["contact", "contacts", "reach", "social", "facebook", "linkedin", "github", "gmail", "email", "phone", "number"]):
       return CONTACTS
 
@@ -110,9 +115,6 @@ class Chatbot:
 
     if any(word in message for word in ["joke", "funny", "make me laugh"]):
       return self.get_joke()
-
-    if any(word in message for word in ["how are you", "how's it going", "you doing"]):
-      return self.random_status()
 
     if any(word in message for word in ["thank", "thanks", "appreciate"]):
       return "No problem! Let me know if you need anything else."
@@ -130,5 +132,5 @@ class Chatbot:
       response = self.default_responses[best_match]
       return response() if callable(response) else response
 
-    # ---- AI THINKING FALLBACK / Longer response ----
+    # ---- AI fallback ----
     return await ai_think_async(message)
