@@ -156,6 +156,44 @@ function ChatInput({ chatMessages, setChatMessages }) {
 
 
 // ------------------- Chat Message Component -------------------
+function parseLinks(text) {
+  const lines = text.split('\n');
+  return lines.map((line, lineIdx) => {
+    const combined = /(https?:\/\/[^\s]+)|([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})|(09\d{9}|\+63\d{10})|([a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)+(?:\/[^\s]*)?)/g;
+    const parts = [];
+    let last = 0;
+    let match;
+    while ((match = combined.exec(line)) !== null) {
+      if (match.index > last) parts.push({ type: 'text', value: line.slice(last, match.index) });
+      if (match[1])      parts.push({ type: 'url',    value: match[1] });
+      else if (match[2]) parts.push({ type: 'email',  value: match[2] });
+      else if (match[3]) parts.push({ type: 'phone',  value: match[3] });
+      else if (match[4]) parts.push({ type: 'domain', value: match[4] });
+      last = match.index + match[0].length;
+    }
+    if (last < line.length) parts.push({ type: 'text', value: line.slice(last) });
+
+    const rendered = parts.map((part, i) => {
+      if (part.type === 'url')
+        return <a key={i} href={part.value} target="_blank" rel="noopener noreferrer" style={{ color: '#3399ff', cursor: 'pointer', wordBreak: 'break-all' }}>{part.value}</a>;
+      if (part.type === 'email')
+        return <a key={i} href={`mailto:${part.value}`} style={{ color: '#3399ff', cursor: 'pointer' }}>{part.value}</a>;
+      if (part.type === 'phone')
+        return <a key={i} href={`tel:${part.value}`} style={{ color: '#3399ff', cursor: 'pointer' }}>{part.value}</a>;
+      if (part.type === 'domain')
+        return <a key={i} href={`https://${part.value}`} target="_blank" rel="noopener noreferrer" style={{ color: '#3399ff', cursor: 'pointer', wordBreak: 'break-all' }}>{part.value}</a>;
+      return <span key={i}>{part.value}</span>;
+    });
+
+    return (
+      <span key={lineIdx}>
+        {rendered}
+        {lineIdx < lines.length - 1 && <br />}
+      </span>
+    );
+  });
+}
+
 function ChatMessage({ message, sender, typing, onPhotoClick }) {
   return (
     <div className={sender === 'user' ? 'chat-message-user' : 'chat-message-robot'}>
@@ -167,7 +205,10 @@ function ChatMessage({ message, sender, typing, onPhotoClick }) {
         />
       )}
       <div className="chat-message-text">
-        <span className={typing ? 'typing' : ''}>{message}</span>
+        {typing
+          ? <span className="typing">{message}</span>
+          : <span>{typeof message === 'string' ? parseLinks(message) : message}</span>
+        }
       </div>
       {sender === 'user' && (
         <img className="icon" src="./Images/usr.png" />
